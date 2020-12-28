@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col class="text-center">
-      <h1>Overzicht</h1>
+      <h1>Merken</h1>
     </v-col>
   </v-row>
 </template>
