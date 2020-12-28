@@ -22,6 +22,11 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
     </v-app-bar>
+
+    <v-snackbar v-model="showAlert" :color="alert.type" top>
+      {{ alert.message }}
+    </v-snackbar>
+
     <v-main>
       <v-container>
         <nuxt />
@@ -31,6 +36,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data() {
     return {
@@ -59,6 +66,19 @@ export default {
         },
       ],
     }
+  },
+
+  computed: {
+    ...mapState('general', ['alert']),
+
+    showAlert: {
+      get() {
+        return Boolean(this.alert.message)
+      },
+      set() {
+        this.$store.commit('general/clearAlert')
+      },
+    },
   },
 }
 </script>
