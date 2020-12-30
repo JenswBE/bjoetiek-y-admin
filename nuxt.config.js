@@ -51,7 +51,7 @@ export default {
 
   publicRuntimeConfig: {
     axios: {
-      baseURL: 'https://backend.bjoetiek-y.be',
+      baseURL: 'https://backend.bjoetiek-y.be/admin',
     },
   },
 
