@@ -111,6 +111,8 @@
 import { mapState } from 'vuex'
 
 export default {
+  head: { title: 'Merken' },
+
   data: () => ({
     search: '',
     dialog: false,

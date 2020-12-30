@@ -46,6 +46,8 @@
 
 <script>
 export default {
+  head: { title: 'Login' },
+
   data: function () {
     return {
       username: '',

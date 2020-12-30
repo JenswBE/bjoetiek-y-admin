@@ -9,8 +9,8 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - admin',
-    title: 'admin',
+    titleTemplate: '%s - Bjoetiek Y',
+    title: 'Beheer',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -47,6 +47,12 @@ export default {
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
     baseURL: 'http://localhost:8090/admin',
+  },
+
+  publicRuntimeConfig: {
+    axios: {
+      baseURL: 'https://backend.bjoetiek-y.be',
+    },
   },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
