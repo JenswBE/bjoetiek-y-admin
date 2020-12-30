@@ -40,6 +40,10 @@ export default {
     '@nuxtjs/axios',
   ],
 
+  router: {
+    middleware: ['auth'],
+  },
+
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
     baseURL: 'http://localhost:8090/admin',

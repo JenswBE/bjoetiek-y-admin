@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer v-model="drawer" clipped fixed app>
+    <v-navigation-drawer v-model="drawer" clipped fixed app v-if="isLoggedIn">
       <v-list>
         <v-list-item
           v-for="(item, i) in items"
@@ -18,9 +18,13 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-app-bar clipped-left fixed app>
+    <v-app-bar clipped-left fixed app v-if="isLoggedIn">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
       <v-toolbar-title v-text="title" />
+      <v-spacer></v-spacer>
+      <v-btn icon to="/logout">
+        <v-icon>mdi-logout</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-snackbar v-model="showAlert" :color="alert.type" top>
@@ -28,9 +32,7 @@
     </v-snackbar>
 
     <v-main>
-      <v-container>
-        <nuxt />
-      </v-container>
+      <nuxt />
     </v-main>
   </v-app>
 </template>
@@ -69,6 +71,7 @@ export default {
   },
 
   computed: {
+    ...mapState('auth', ['isLoggedIn']),
     ...mapState('general', ['alert']),
 
     showAlert: {
@@ -76,7 +79,7 @@ export default {
         return Boolean(this.alert.message)
       },
       set() {
-        this.$store.commit('general/clearAlert')
+        this.$store.commit('general/CLEAR_ALERT')
       },
     },
   },
