@@ -135,20 +135,16 @@ export default {
       },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
-    editedIndex: -1,
+    editedIndex: '',
     editedItem: {
       name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      logo_url: '',
+      website_url: '',
     },
     defaultItem: {
       name: '',
-      calories: 0,
-      fat: 0,
-      carbs: 0,
-      protein: 0,
+      logo_url: '',
+      website_url: '',
     },
   }),
 
@@ -156,7 +152,7 @@ export default {
     ...mapState('manufacturers', ['manufacturers']),
 
     formTitle() {
-      return this.editedIndex === -1 ? 'Merk toevoegen' : 'Merk bewerken'
+      return this.editedIndex === '' ? 'Merk toevoegen' : 'Merk bewerken'
     },
   },
 
@@ -187,7 +183,7 @@ export default {
     },
 
     deleteItemConfirm() {
-      this.manufacturers.splice(this.editedIndex, 1)
+      this.$store.dispatch('manufacturers/delete', this.editedIndex)
       this.closeDelete()
     },
 
@@ -195,7 +191,7 @@ export default {
       this.dialog = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
+        this.editedIndex = ''
       })
     },
 
@@ -203,15 +199,15 @@ export default {
       this.dialogDelete = false
       this.$nextTick(() => {
         this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
+        this.editedIndex = ''
       })
     },
 
     save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.manufacturers[this.editedIndex], this.editedItem)
+      if (this.editedIndex === '') {
+        this.$store.dispatch('manufacturers/add', this.editedItem)
       } else {
-        this.manufacturers.push(this.editedItem)
+        this.$store.dispatch('manufacturers/update', this.editedItem)
       }
       this.close()
     },
