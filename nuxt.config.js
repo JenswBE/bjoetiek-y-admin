@@ -49,12 +49,6 @@ export default {
     baseURL: 'http://localhost:8090/admin',
   },
 
-  publicRuntimeConfig: {
-    axios: {
-      baseURL: 'https://backend.bjoetiek-y.be/admin',
-    },
-  },
-
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
