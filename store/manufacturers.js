@@ -1,6 +1,15 @@
+import cloneDeep from "lodash.clonedeep";
+import Vue from "vue";
+
 export const state = () => ({
   manufacturers: [],
 })
+
+export const getters = {
+  manufacturersList(state) {
+    return Object.values(state.manufacturers)
+  },
+}
 
 export const mutations = {
   SET_MANUFACTURERS(state, manufacturers) {
@@ -8,24 +17,25 @@ export const mutations = {
   },
 
   ADD_MANUFACTURER(state, manufacturer) {
-    this.$set(state.manufacturers, manufacturer.id, cloneDeep(manufacturer));
+    Vue.set(state.manufacturers, manufacturer.id, cloneDeep(manufacturer));
   },
 
   UPDATE_MANUFACTURER(state, manufacturer) {
-    this.$set(state.manufacturers, manufacturer.id, cloneDeep(manufacturer));
+    Vue.set(state.manufacturers, manufacturer.id, cloneDeep(manufacturer));
   },
 
   DELETE_MANUFACTURER(state, manufacturer_id) {
-    this.$delete(state.manufacturers, manufacturer_id);
+    Vue.delete(state.manufacturers, manufacturer_id);
   },
 }
 
 export const actions = {
-  async get(context) {
+  async list(context) {
+    console.debug('Store manufacturers/list', 'Dispatched')
     this.$axios
       .get(`/manufacturers`)
       .then(({ data }) => {
-        manufacturers = data.reduce((result, item) => {
+        const manufacturers = data.reduce((result, item) => {
           result[item.id] = item;
           return result;
         }, {});
@@ -42,6 +52,7 @@ export const actions = {
   },
 
   async add(context, manufacturer) {
+    console.debug('Store manufacturers/add', 'Dispatched', manufacturer)
     this.$axios
       .post(`/manufacturers`, manufacturer)
       .then(({ data }) => {
@@ -58,6 +69,7 @@ export const actions = {
   },
 
   async update(context, manufacturer) {
+    console.debug('Store manufacturers/update', 'Dispatched', manufacturer)
     this.$axios
       .put(`/manufacturers/${manufacturer.id}`, manufacturer)
       .then(({ data }) => {
@@ -73,11 +85,12 @@ export const actions = {
       })
   },
 
-  async delete(context, manufacturer) {
+  async delete(context, manufacturer_id) {
+    console.debug('Store manufacturers/delete', 'Dispatched', manufacturer_id)
     this.$axios
-      .delete(`/manufacturers/${manufacturer.id}`)
+      .delete(`/manufacturers/${manufacturer_id}`)
       .then(({ data }) => {
-        context.commit('DELETE_MANUFACTURER', data)
+        context.commit('DELETE_MANUFACTURER', manufacturer_id)
       })
       .catch((e) => {
         const msg = `Merk verwijderen mislukt: ${e.message}`

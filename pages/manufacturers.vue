@@ -4,7 +4,7 @@
       <v-col>
         <v-data-table
           :headers="headers"
-          :items="manufacturers"
+          :items="manufacturersList"
           sort-by="name"
           class="elevation-1"
           :search="search"
@@ -20,7 +20,7 @@
                 hide-details
               ></v-text-field>
               <v-spacer></v-spacer>
-              <v-dialog v-model="dialog" max-width="500px">
+              <v-dialog v-model="formOpen" max-width="500px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     color="primary"
@@ -42,25 +42,28 @@
                       <v-row>
                         <v-col cols="12">
                           <v-text-field
-                            v-model="editedItem.name"
+                            v-model="activeManufacturer.name"
                             label="Naam"
                             placeholder="Bv. Nivea"
                             clearable
+                            @keydown.enter.prevent="saveManufacturer"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            v-model="editedItem.logo_url"
+                            v-model="activeManufacturer.logo_url"
                             label="Logo"
                             clearable
+                            @keydown.enter.prevent="saveManufacturer"
                           ></v-text-field>
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            v-model="editedItem.website_url"
+                            v-model="activeManufacturer.website_url"
                             label="Website"
                             placeholder="Bv. https://nivea.be"
                             clearable
+                            @keydown.enter.prevent="saveManufacturer"
                           ></v-text-field>
                         </v-col>
                       </v-row>
@@ -69,24 +72,30 @@
 
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="close">
+                    <v-btn color="blue darken-1" text @click="closeForm">
                       Annuleren
                     </v-btn>
-                    <v-btn color="blue darken-1" text @click="save">
+                    <v-btn color="blue darken-1" text @click="saveManufacturer">
                       Opslaan
                     </v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
-              <v-dialog v-model="dialogDelete" max-width="500px">
+              <v-dialog v-model="confirmDeleteOpen" max-width="500px">
                 <v-card>
                   <v-card-title class="headline">Ben je zeker?</v-card-title>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" text @click="closeDelete"
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="closeConfirmDelete"
                       >Annuleren</v-btn
                     >
-                    <v-btn color="blue darken-1" text @click="deleteItemConfirm"
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="confirmDeleteManufacturer"
                       >OK</v-btn
                     >
                     <v-spacer></v-spacer>
@@ -96,10 +105,12 @@
             </v-toolbar>
           </template>
           <template v-slot:item.actions="{ item }">
-            <v-icon small class="mr-2" @click="editItem(item)">
+            <v-icon small class="mr-2" @click="editManufacturer(item)">
               mdi-pencil
             </v-icon>
-            <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+            <v-icon small @click="deleteManufacturer(item.id)">
+              mdi-delete
+            </v-icon>
           </template>
         </v-data-table>
       </v-col>
@@ -108,15 +119,15 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   head: { title: 'Merken' },
 
   data: () => ({
     search: '',
-    dialog: false,
-    dialogDelete: false,
+    formOpen: false,
+    confirmDeleteOpen: false,
     headers: [
       {
         text: 'Naam',
@@ -135,13 +146,13 @@ export default {
       },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
-    editedIndex: '',
-    editedItem: {
+    activeID: '',
+    activeManufacturer: {
       name: '',
       logo_url: '',
       website_url: '',
     },
-    defaultItem: {
+    defaultManufacturer: {
       name: '',
       logo_url: '',
       website_url: '',
@@ -150,66 +161,65 @@ export default {
 
   computed: {
     ...mapState('manufacturers', ['manufacturers']),
+    ...mapGetters('manufacturers', ['manufacturersList']),
 
     formTitle() {
-      return this.editedIndex === '' ? 'Merk toevoegen' : 'Merk bewerken'
+      return this.activeID === '' ? 'Merk toevoegen' : 'Merk bewerken'
     },
   },
 
   watch: {
-    dialog(val) {
-      val || this.close()
+    formOpen(val) {
+      val || this.closeForm()
     },
-    dialogDelete(val) {
-      val || this.closeDelete()
+    confirmDeleteOpen(val) {
+      val || this.closeConfirmDelete()
     },
   },
 
   mounted() {
-    this.$store.dispatch('manufacturers/get')
+    this.$store.dispatch('manufacturers/list')
   },
 
   methods: {
-    editItem(item) {
-      this.editedIndex = this.manufacturers.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
+    editManufacturer(manufacturer) {
+      this.activeID = manufacturer.id
+      this.activeManufacturer = Object.assign({}, manufacturer)
+      this.formOpen = true
     },
 
-    deleteItem(item) {
-      this.editedIndex = this.manufacturers.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
-
-    deleteItemConfirm() {
-      this.$store.dispatch('manufacturers/delete', this.editedIndex)
-      this.closeDelete()
-    },
-
-    close() {
-      this.dialog = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = ''
-      })
-    },
-
-    closeDelete() {
-      this.dialogDelete = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = ''
-      })
-    },
-
-    save() {
-      if (this.editedIndex === '') {
-        this.$store.dispatch('manufacturers/add', this.editedItem)
+    saveManufacturer() {
+      if (this.activeID === '') {
+        this.$store.dispatch('manufacturers/add', this.activeManufacturer)
       } else {
-        this.$store.dispatch('manufacturers/update', this.editedItem)
+        this.$store.dispatch('manufacturers/update', this.activeManufacturer)
       }
-      this.close()
+      this.closeForm()
+    },
+
+    closeForm() {
+      this.formOpen = false
+      this.$nextTick(() => {
+        this.activeID = ''
+        this.activeManufacturer = Object.assign({}, this.defaultManufacturer)
+      })
+    },
+
+    deleteManufacturer(manufacturer_id) {
+      this.activeID = manufacturer_id
+      this.confirmDeleteOpen = true
+    },
+
+    confirmDeleteManufacturer() {
+      this.$store.dispatch('manufacturers/delete', this.activeID)
+      this.closeConfirmDelete()
+    },
+
+    closeConfirmDelete() {
+      this.confirmDeleteOpen = false
+      this.$nextTick(() => {
+        this.activeID = ''
+      })
     },
   },
 }
