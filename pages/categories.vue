@@ -102,6 +102,20 @@
             </v-toolbar>
           </template>
           <template v-slot:item.actions="{ item }">
+            <v-icon
+              small
+              @click="increaseSortOrder(item)"
+              :disabled="sortedCategoriesList[0].id === item.id"
+            >
+              mdi-arrow-up
+            </v-icon>
+            <v-icon
+              small
+              @click="decreaseSortOrder(item)"
+              :disabled="lastCategory.id === item.id"
+            >
+              mdi-arrow-down
+            </v-icon>
             <v-icon small class="mr-2" @click="editCategory(item)">
               mdi-pencil
             </v-icon>
@@ -114,7 +128,8 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import cloneDeep from 'lodash.clonedeep';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   head: { title: 'Categorieën' },
@@ -147,80 +162,122 @@ export default {
       name: '',
       description: '',
       image_url: '',
-      sort_order: 999,
+      sort_order: 0,
     },
   }),
 
   computed: {
     ...mapState('categories', ['categories']),
-    ...mapGetters('categories', ['categoriesList']),
+    ...mapGetters('categories', ['categoriesList', 'sortedCategoriesList']),
 
     formTitle() {
-      return this.activeID === '' ? 'Categorie toevoegen' : 'Categorie bewerken'
+      return this.activeID === ''
+        ? 'Categorie toevoegen'
+        : 'Categorie bewerken';
+    },
+
+    lastCategory() {
+      const index = this.sortedCategoriesList.length - 1;
+      return this.sortedCategoriesList[index];
     },
   },
 
   watch: {
     formOpen(val) {
-      val || this.closeForm()
+      val || this.closeForm();
     },
+
     confirmDeleteOpen(val) {
-      val || this.closeConfirmDelete()
+      val || this.closeConfirmDelete();
     },
   },
 
   mounted() {
-    this.$store.dispatch('categories/list')
+    this.$store.dispatch('categories/list');
   },
 
   methods: {
     increaseSortOrder(category) {
-      this.$store.dispatch('categories/increaseSortOrder', category.id)
+      // Fetch previous category
+      const prevCat = this.sortedCategoriesList
+        .filter((c) => c.sort_order < category.sort_order)
+        .pop();
+
+      // Swap sort_order
+      this.swapSortOrder(prevCat, category);
     },
 
     decreaseSortOrder(category) {
-      this.$store.dispatch('categories/decreaseSortOrder', category.id)
+      // Fetch previous category
+      const nextCat = this.sortedCategoriesList.filter(
+        (c) => c.sort_order > category.sort_order
+      )[0];
+
+      // Swap sort_order
+      this.swapSortOrder(category, nextCat);
+    },
+
+    swapSortOrder(a, b) {
+      // Don't change original variables
+      a = cloneDeep(a);
+      b = cloneDeep(b);
+
+      // Swap sort_order
+      [a.sort_order, b.sort_order] = [b.sort_order, a.sort_order];
+
+      // Save swap
+      this.$store.dispatch('categories/update', a);
+      this.$store.dispatch('categories/update', b);
     },
 
     editCategory(category) {
-      this.activeID = category.id
-      this.activeCategory = Object.assign({}, category)
-      this.formOpen = true
+      this.activeID = category.id;
+      this.activeCategory = cloneDeep(category);
+      this.formOpen = true;
     },
 
     saveCategory() {
       if (this.activeID === '') {
-        this.$store.dispatch('categories/add', this.activeCategory)
+        // Add category
+        if (this.lastCategory !== undefined) {
+          // Other categories exist
+          this.activeCategory.sort_order = this.lastCategory.sort_order + 1;
+        } else {
+          // First category
+          this.activeCategory.sort_order = 0;
+        }
+        this.$store.dispatch('categories/add', this.activeCategory);
       } else {
-        this.$store.dispatch('categories/update', this.activeCategory)
+        // Update category
+        this.$store.dispatch('categories/update', this.activeCategory);
       }
-      this.closeForm()
+      this.closeForm();
     },
 
     closeForm() {
-      this.formOpen = false
+      this.formOpen = false;
       this.$nextTick(() => {
-        this.activeID = ''
-        this.activeCategory = Object.assign({}, this.defaultCategory)
-      })
+        this.activeID = '';
+        this.activeCategory = cloneDeep(this.defaultCategory);
+      });
     },
 
     deleteCategory(category_id) {
-      this.activeID = category_id
-      this.confirmDeleteOpen = true
+      this.activeID = category_id;
+      this.confirmDeleteOpen = true;
     },
 
     confirmDeleteCategory() {
-      this.$store.dispatch('categories/delete', this.activeID)
-      this.closeConfirmDelete()
+      this.$store.dispatch('categories/delete', this.activeID);
+      this.closeConfirmDelete();
     },
 
     closeConfirmDelete() {
-      this.confirmDeleteOpen = false
+      this.confirmDeleteOpen = false;
       this.$nextTick(() => {
-        this.activeID = ''
-      })
+        this.activeID = '';
+      });
     },
   },
-}
+};
 </script>

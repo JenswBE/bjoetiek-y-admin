@@ -119,7 +119,8 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import cloneDeep from 'lodash.clonedeep';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   head: { title: 'Merken' },
@@ -164,63 +165,63 @@ export default {
     ...mapGetters('manufacturers', ['manufacturersList']),
 
     formTitle() {
-      return this.activeID === '' ? 'Merk toevoegen' : 'Merk bewerken'
+      return this.activeID === '' ? 'Merk toevoegen' : 'Merk bewerken';
     },
   },
 
   watch: {
     formOpen(val) {
-      val || this.closeForm()
+      val || this.closeForm();
     },
     confirmDeleteOpen(val) {
-      val || this.closeConfirmDelete()
+      val || this.closeConfirmDelete();
     },
   },
 
   mounted() {
-    this.$store.dispatch('manufacturers/list')
+    this.$store.dispatch('manufacturers/list');
   },
 
   methods: {
     editManufacturer(manufacturer) {
-      this.activeID = manufacturer.id
-      this.activeManufacturer = Object.assign({}, manufacturer)
-      this.formOpen = true
+      this.activeID = manufacturer.id;
+      this.activeManufacturer = cloneDeep(manufacturer);
+      this.formOpen = true;
     },
 
     saveManufacturer() {
       if (this.activeID === '') {
-        this.$store.dispatch('manufacturers/add', this.activeManufacturer)
+        this.$store.dispatch('manufacturers/add', this.activeManufacturer);
       } else {
-        this.$store.dispatch('manufacturers/update', this.activeManufacturer)
+        this.$store.dispatch('manufacturers/update', this.activeManufacturer);
       }
-      this.closeForm()
+      this.closeForm();
     },
 
     closeForm() {
-      this.formOpen = false
+      this.formOpen = false;
       this.$nextTick(() => {
-        this.activeID = ''
-        this.activeManufacturer = Object.assign({}, this.defaultManufacturer)
-      })
+        this.activeID = '';
+        this.activeManufacturer = cloneDeep(this.defaultManufacturer);
+      });
     },
 
     deleteManufacturer(manufacturer_id) {
-      this.activeID = manufacturer_id
-      this.confirmDeleteOpen = true
+      this.activeID = manufacturer_id;
+      this.confirmDeleteOpen = true;
     },
 
     confirmDeleteManufacturer() {
-      this.$store.dispatch('manufacturers/delete', this.activeID)
-      this.closeConfirmDelete()
+      this.$store.dispatch('manufacturers/delete', this.activeID);
+      this.closeConfirmDelete();
     },
 
     closeConfirmDelete() {
-      this.confirmDeleteOpen = false
+      this.confirmDeleteOpen = false;
       this.$nextTick(() => {
-        this.activeID = ''
-      })
+        this.activeID = '';
+      });
     },
   },
-}
+};
 </script>

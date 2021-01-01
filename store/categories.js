@@ -2,7 +2,7 @@ import cloneDeep from "lodash.clonedeep";
 import Vue from "vue";
 
 export const state = () => ({
-  categories: [],
+  categories: {},
 })
 
 export const getters = {
