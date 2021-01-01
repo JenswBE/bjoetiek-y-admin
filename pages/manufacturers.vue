@@ -144,7 +144,7 @@ export default {
         sortable: false,
         value: 'website_url',
       },
-      { text: 'Actions', value: 'actions', sortable: false },
+      { text: 'Acties', value: 'actions', sortable: false },
     ],
     activeID: '',
     activeManufacturer: {
