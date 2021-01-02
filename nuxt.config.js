@@ -46,7 +46,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'http://localhost:8090/admin',
+    baseURL: process.env.NODE_ENV === 'production' ? 'https://backend.bjoetiek-y.be/admin' : 'http://localhost:8090/admin',
   },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
