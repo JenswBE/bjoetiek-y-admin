@@ -224,16 +224,7 @@ export default {
     },
 
     uploadImage(e) {
-      // Check if valid image
       const file = e.target.files[0];
-      if (!file.type.includes('image/')) {
-        this.$store.commit('general/SET_ALERT', {
-          type: 'error',
-          message: 'Provided file is not an image',
-        });
-      }
-
-      // Upload image
       this.$store.dispatch('images/upload', { id: this.activeID, file });
     },
 
