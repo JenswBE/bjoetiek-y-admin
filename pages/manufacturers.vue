@@ -104,6 +104,11 @@
               </v-dialog>
             </v-toolbar>
           </template>
+          <template v-slot:item.logo_url="{ item }">
+            <v-icon small class="mr-2" @click="selectImage(item)">
+              mdi-image-plus
+            </v-icon>
+          </template>
           <template v-slot:item.actions="{ item }">
             <v-icon small class="mr-2" @click="editManufacturer(item)">
               mdi-pencil
@@ -115,6 +120,13 @@
         </v-data-table>
       </v-col>
     </v-row>
+    <input
+      ref="imageUploader"
+      class="d-none"
+      type="file"
+      accept="image/*"
+      @change="uploadImage"
+    />
   </v-container>
 </template>
 
@@ -204,6 +216,25 @@ export default {
         this.activeID = '';
         this.activeManufacturer = cloneDeep(this.defaultManufacturer);
       });
+    },
+
+    selectImage(manufacturer) {
+      this.activeID = manufacturer.id;
+      this.$refs.imageUploader.click();
+    },
+
+    uploadImage(e) {
+      // Check if valid image
+      const file = e.target.files[0];
+      if (!file.type.includes('image/')) {
+        this.$store.commit('general/SET_ALERT', {
+          type: 'error',
+          message: 'Provided file is not an image',
+        });
+      }
+
+      // Upload image
+      this.$store.dispatch('images/upload', { id: this.activeID, file });
     },
 
     deleteManufacturer(manufacturer_id) {

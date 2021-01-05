@@ -13,5 +13,6 @@ $ yarn dev
 $ yarn generate
 ```
 
-## Config
-- API_URL: Set base url of backend
+## Thanks to
+
+- https://codepen.io/blachocolat/pen/BgMKRQ
