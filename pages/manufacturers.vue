@@ -105,13 +105,19 @@
             </v-toolbar>
           </template>
           <template v-slot:item.logo_url="{ item }">
-            <v-icon small class="mr-2" @click="selectImage(item)">
-              mdi-image-plus
-            </v-icon>
+            <img
+              :src="`${backendURL}/images/${item.id}-100-100-fit.png?cache=${cacheKey}`"
+              class="ma-1"
+              style="cursor: pointer"
+              @click="selectImage(item)"
+            />
           </template>
           <template v-slot:item.actions="{ item }">
             <v-icon small class="mr-2" @click="editManufacturer(item)">
               mdi-pencil
+            </v-icon>
+            <v-icon small class="mr-2" @click="selectImage(item)">
+              mdi-image-plus
             </v-icon>
             <v-icon small @click="deleteManufacturer(item.id)">
               mdi-delete
@@ -139,6 +145,7 @@ export default {
 
   data: () => ({
     search: '',
+    cacheKey: '',
     formOpen: false,
     confirmDeleteOpen: false,
     headers: [
@@ -175,6 +182,10 @@ export default {
   computed: {
     ...mapState('manufacturers', ['manufacturers']),
     ...mapGetters('manufacturers', ['manufacturersList']),
+
+    backendURL() {
+      return this.$axios.defaults.baseURL + '/..';
+    },
 
     formTitle() {
       return this.activeID === '' ? 'Merk toevoegen' : 'Merk bewerken';
@@ -223,9 +234,12 @@ export default {
       this.$refs.imageUploader.click();
     },
 
-    uploadImage(e) {
+    async uploadImage(e) {
       const file = e.target.files[0];
-      this.$store.dispatch('images/upload', { id: this.activeID, file });
+      await this.$store.dispatch('images/upload', { id: this.activeID, file });
+      setTimeout(() => {
+        this.cacheKey = Date.now();
+      }, 2000);
     },
 
     deleteManufacturer(manufacturer_id) {
