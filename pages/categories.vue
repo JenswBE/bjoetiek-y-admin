@@ -45,7 +45,8 @@
                             v-model="activeCategory.name"
                             label="Naam"
                             placeholder="Bv. Gelaatsverzorging"
-                            clearable
+                            append-icon="mdi-close"
+                            @click:append="activeCategory.name = ''"
                             @keydown.enter.prevent="saveCategory"
                           ></v-text-field>
                         </v-col>
@@ -54,14 +55,6 @@
                             v-model="activeCategory.description"
                             label="Beschrijving"
                           ></v-textarea>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field
-                            v-model="activeCategory.image_url"
-                            label="Foto"
-                            clearable
-                            @keydown.enter.prevent="saveCategory"
-                          ></v-text-field>
                         </v-col>
                       </v-row>
                     </v-container>
@@ -101,6 +94,14 @@
               </v-dialog>
             </v-toolbar>
           </template>
+          <template v-slot:item.image_url="{ item }">
+            <img
+              :src="`${backendURL}/images/${item.id}-100-100-fit.png?cache=${cacheKey}`"
+              class="ma-1"
+              style="cursor: pointer"
+              @click="selectImage(item)"
+            />
+          </template>
           <template v-slot:item.actions="{ item }">
             <v-icon
               small
@@ -119,11 +120,21 @@
             <v-icon small class="mr-2" @click="editCategory(item)">
               mdi-pencil
             </v-icon>
+            <v-icon small class="mr-2" @click="selectImage(item)">
+              mdi-image-plus
+            </v-icon>
             <v-icon small @click="deleteCategory(item.id)"> mdi-delete </v-icon>
           </template>
         </v-data-table>
       </v-col>
     </v-row>
+    <input
+      ref="imageUploader"
+      class="d-none"
+      type="file"
+      accept="image/*"
+      @change="uploadImage"
+    />
   </v-container>
 </template>
 
@@ -136,6 +147,7 @@ export default {
 
   data: () => ({
     search: '',
+    cacheKey: '',
     formOpen: false,
     confirmDeleteOpen: false,
     headers: [
@@ -170,6 +182,10 @@ export default {
     ...mapState('categories', ['categories']),
     ...mapGetters('categories', ['categoriesList', 'sortedCategoriesList']),
 
+    backendURL() {
+      return this.$axios.defaults.baseURL + '/..';
+    },
+
     formTitle() {
       return this.activeID === ''
         ? 'Categorie toevoegen'
@@ -193,6 +209,7 @@ export default {
   },
 
   mounted() {
+    this.bumpCacheKey;
     this.$store.dispatch('categories/list');
   },
 
@@ -260,6 +277,21 @@ export default {
         this.activeID = '';
         this.activeCategory = cloneDeep(this.defaultCategory);
       });
+    },
+
+    selectImage(manufacturer) {
+      this.activeID = manufacturer.id;
+      this.$refs.imageUploader.click();
+    },
+
+    async uploadImage(e) {
+      const file = e.target.files[0];
+      await this.$store.dispatch('images/upload', { id: this.activeID, file });
+      setTimeout(this.bumpCacheKey, 2000);
+    },
+
+    bumpCacheKey() {
+      this.cacheKey = Date.now();
     },
 
     deleteCategory(category_id) {
