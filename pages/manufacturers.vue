@@ -45,15 +45,8 @@
                             v-model="activeManufacturer.name"
                             label="Naam"
                             placeholder="Bv. Nivea"
-                            clearable
-                            @keydown.enter.prevent="saveManufacturer"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12">
-                          <v-text-field
-                            v-model="activeManufacturer.logo_url"
-                            label="Logo"
-                            clearable
+                            append-icon="mdi-close"
+                            @click:append="activeManufacturer.name = ''"
                             @keydown.enter.prevent="saveManufacturer"
                           ></v-text-field>
                         </v-col>
@@ -62,7 +55,8 @@
                             v-model="activeManufacturer.website_url"
                             label="Website"
                             placeholder="Bv. https://nivea.be"
-                            clearable
+                            append-icon="mdi-close"
+                            @click:append="activeManufacturer.website_url = ''"
                             @keydown.enter.prevent="saveManufacturer"
                           ></v-text-field>
                         </v-col>
@@ -111,6 +105,13 @@
               style="cursor: pointer"
               @click="selectImage(item)"
             />
+          </template>
+          <template v-slot:item.website_url="{ item }">
+            <p>
+              <a :href="item.website_url" target="_blank">{{
+                item.website_url
+              }}</a>
+            </p>
           </template>
           <template v-slot:item.actions="{ item }">
             <v-icon small class="mr-2" @click="editManufacturer(item)">
@@ -202,6 +203,7 @@ export default {
   },
 
   mounted() {
+    this.bumpCacheKey();
     this.$store.dispatch('manufacturers/list');
   },
 
@@ -237,9 +239,11 @@ export default {
     async uploadImage(e) {
       const file = e.target.files[0];
       await this.$store.dispatch('images/upload', { id: this.activeID, file });
-      setTimeout(() => {
-        this.cacheKey = Date.now();
-      }, 2000);
+      setTimeout(this.bumpCacheKey, 2000);
+    },
+
+    bumpCacheKey() {
+      this.cacheKey = Date.now();
     },
 
     deleteManufacturer(manufacturer_id) {
