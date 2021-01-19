@@ -15,7 +15,7 @@
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Search"
+                label="Zoeken"
                 single-line
                 hide-details
               ></v-text-field>
@@ -98,7 +98,7 @@
               </v-dialog>
             </v-toolbar>
           </template>
-          <template v-slot:item.logo_url="{ item }">
+          <template v-slot:item.logo="{ item }">
             <img
               :src="`${backendURL}/images/${item.id}-100-100-fit.png?cache=${cacheKey}`"
               class="ma-1"
@@ -158,7 +158,7 @@ export default {
       {
         text: 'Logo',
         sortable: false,
-        value: 'logo_url',
+        value: 'logo',
       },
       {
         text: 'Website',
@@ -170,12 +170,10 @@ export default {
     activeID: '',
     activeManufacturer: {
       name: '',
-      logo_url: '',
       website_url: '',
     },
     defaultManufacturer: {
       name: '',
-      logo_url: '',
       website_url: '',
     },
   }),
@@ -215,6 +213,11 @@ export default {
     },
 
     saveManufacturer() {
+      const website_url = this.activeManufacturer.website_url;
+      if (website_url.length > 0 && !website_url.startsWith('http')) {
+        this.activeManufacturer.website_url = 'https://' + website_url;
+      }
+
       if (this.activeID === '') {
         this.$store.dispatch('manufacturers/add', this.activeManufacturer);
       } else {

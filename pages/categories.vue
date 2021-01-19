@@ -15,7 +15,7 @@
               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
-                label="Search"
+                label="Zoeken"
                 single-line
                 hide-details
               ></v-text-field>
@@ -94,7 +94,7 @@
               </v-dialog>
             </v-toolbar>
           </template>
-          <template v-slot:item.image_url="{ item }">
+          <template v-slot:item.photo="{ item }">
             <img
               :src="`${backendURL}/images/${item.id}-100-100-fit.png?cache=${cacheKey}`"
               class="ma-1"
@@ -159,7 +159,7 @@ export default {
       {
         text: 'Foto',
         sortable: false,
-        value: 'image_url',
+        value: 'photo',
       },
       { text: 'Acties', value: 'actions', sortable: false },
     ],
@@ -167,13 +167,11 @@ export default {
     activeCategory: {
       name: '',
       description: '',
-      image_url: '',
       sort_order: 999,
     },
     defaultCategory: {
       name: '',
       description: '',
-      image_url: '',
       sort_order: 0,
     },
   }),
