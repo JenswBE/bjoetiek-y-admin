@@ -52,7 +52,7 @@
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            v-model.number="activeProduct.price"
+                            v-model.number="activePrice"
                             label="Prijs"
                             placeholder="Bv. 15.00"
                             prefix="€"
@@ -142,7 +142,7 @@
               </v-dialog>
             </v-toolbar>
           </template>
-          <template v-slot:item.logo_url="{ item }">
+          <template v-slot:item.photo="{ item }">
             <img
               :src="`${backendURL}/images/${item.id}-100-100-fit.png?cache=${cacheKey}`"
               class="ma-1"
@@ -150,12 +150,20 @@
               @click="selectImage(item)"
             />
           </template>
-          <template v-slot:item.website_url="{ item }">
-            <p>
-              <a :href="item.website_url" target="_blank">{{
-                item.website_url
-              }}</a>
-            </p>
+          <template v-slot:item.price="{ item }">
+            {{
+              (item.price / 100.0).toLocaleString(undefined, {
+                style: 'currency',
+                currency: 'EUR',
+              })
+            }}
+          </template>
+          <template v-slot:item.manufacturer_id="{ item }">
+            {{
+              manufacturers[item.manufacturer_id]
+                ? manufacturers[item.manufacturer_id].name
+                : ''
+            }}
           </template>
           <template v-slot:item.actions="{ item }">
             <v-icon small class="mr-2" @click="editProduct(item)">
@@ -250,6 +258,7 @@ export default {
   }),
 
   computed: {
+    ...mapState('manufacturers', ['manufacturers']),
     ...mapState('products', ['products']),
     ...mapGetters('categories', ['categoriesList']),
     ...mapGetters('manufacturers', ['manufacturersList']),
@@ -261,6 +270,15 @@ export default {
 
     formTitle() {
       return this.activeID === '' ? 'Product toevoegen' : 'Product bewerken';
+    },
+
+    activePrice: {
+      get: function () {
+        return this.activeProduct.price / 100.0;
+      },
+      set: function (newValue) {
+        this.activeProduct.price = Math.round(newValue * 100);
+      },
     },
   },
 
