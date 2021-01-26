@@ -85,6 +85,8 @@
                             item-value="id"
                             label="Categorieën"
                             chips
+                            deletable-chips
+                            hide-selected
                             multiple
                           ></v-select>
                         </v-col>
