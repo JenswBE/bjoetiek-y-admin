@@ -53,6 +53,9 @@ export const actions = {
 
   async add(context, product) {
     console.debug('Store products/add', 'Dispatched', product);
+    if (product.manufacturer_id === '') {
+      delete product.manufacturer_id;
+    }
     this.$axios
       .post(`/products`, product)
       .then(({ data }) => {
@@ -70,6 +73,9 @@ export const actions = {
 
   async update(context, product) {
     console.debug('Store products/update', 'Dispatched', product);
+    if (product.manufacturer_id === '') {
+      delete product.manufacturer_id;
+    }
     this.$axios
       .put(`/products/${product.id}`, product)
       .then(({ data }) => {

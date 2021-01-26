@@ -52,7 +52,7 @@
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            v-model="activeProduct.price"
+                            v-model.number="activeProduct.price"
                             label="Prijs"
                             placeholder="Bv. 15.00"
                             prefix="€"
@@ -79,7 +79,7 @@
                         </v-col>
                         <v-col cols="12">
                           <v-select
-                            v-model="activeProduct.manufacturer_id"
+                            v-model="activeProduct.category_ids"
                             :items="categoriesList"
                             item-text="name"
                             item-value="id"
@@ -90,7 +90,7 @@
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            v-model="activeProduct.stock_count"
+                            v-model.number="activeProduct.stock_count"
                             label="In voorraad"
                             type="number"
                             min="0"
@@ -225,26 +225,22 @@ export default {
     activeID: '',
     activeProduct: {
       name: '',
-      created_at: '',
-      updated_at: '',
-      name: '',
       slug: '',
       description_short: '',
       description_long: '',
       price: 0,
+      category_ids: [],
       manufacturer_id: '',
       status: '',
       stock_count: 0,
     },
     defaultProduct: {
       name: '',
-      created_at: '',
-      updated_at: '',
-      name: '',
       slug: '',
       description_short: '',
       description_long: '',
       price: 0,
+      category_ids: [],
       manufacturer_id: '',
       status: '',
       stock_count: 0,
