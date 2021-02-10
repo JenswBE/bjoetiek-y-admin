@@ -119,6 +119,50 @@
                   </v-card-actions>
                 </v-card>
               </v-dialog>
+              <v-dialog v-model="editDescriptionsOpen" max-width="500px">
+                <v-card>
+                  <v-card-title>
+                    <span class="headline">Beschrijvingen bewerken</span>
+                  </v-card-title>
+
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12">
+                          <v-textarea
+                            v-model="activeProduct.description_short"
+                            label="Korte beschrijving"
+                            append-icon="mdi-close"
+                            @click:append="activeProduct.description_short = ''"
+                          />
+                        </v-col>
+                        <v-col cols="12">
+                          <v-textarea
+                            v-model="activeProduct.description_long"
+                            label="Lange beschrijving"
+                            append-icon="mdi-close"
+                            @click:append="activeProduct.description_long = ''"
+                          />
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="closeEditDescriptionsForm"
+                    >
+                      Annuleren
+                    </v-btn>
+                    <v-btn color="blue darken-1" text @click="saveProduct">
+                      Opslaan
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
               <v-dialog v-model="confirmDeleteOpen" max-width="500px">
                 <v-card>
                   <v-card-title class="headline">Ben je zeker?</v-card-title>
@@ -169,6 +213,9 @@
             <v-icon small class="mr-2" @click="editProduct(item)">
               mdi-pencil
             </v-icon>
+            <v-icon small class="mr-2" @click="editDescriptions(item)">
+              mdi-format-font
+            </v-icon>
             <v-icon small class="mr-2" @click="selectImage(item)">
               mdi-image-plus
             </v-icon>
@@ -198,6 +245,7 @@ export default {
     search: '',
     cacheKey: '',
     formOpen: false,
+    editDescriptionsOpen: false,
     confirmDeleteOpen: false,
     headers: [
       {
@@ -305,6 +353,12 @@ export default {
       this.formOpen = true;
     },
 
+    editDescriptions(product) {
+      this.activeID = product.id;
+      this.activeProduct = cloneDeep(product);
+      this.editDescriptionsOpen = true;
+    },
+
     saveProduct() {
       if (this.activeID === '') {
         this.$store.dispatch('products/add', this.activeProduct);
@@ -312,10 +366,19 @@ export default {
         this.$store.dispatch('products/update', this.activeProduct);
       }
       this.closeForm();
+      this.closeEditDescriptionsForm();
     },
 
     closeForm() {
       this.formOpen = false;
+      this.$nextTick(() => {
+        this.activeID = '';
+        this.activeProduct = cloneDeep(this.defaultProduct);
+      });
+    },
+
+    closeEditDescriptionsForm() {
+      this.editDescriptionsOpen = false;
       this.$nextTick(() => {
         this.activeID = '';
         this.activeProduct = cloneDeep(this.defaultProduct);
