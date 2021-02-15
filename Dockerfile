@@ -1,13 +1,8 @@
-# Based on https://vuejs.org/v2/cookbook/dockerize-vuejs-app.html
-
 # Build application
 FROM node:lts-alpine as builder
 WORKDIR /app
-RUN apk add python make g++
-COPY package.json .
-COPY yarn.lock .
-RUN yarn install
 COPY . .
+RUN yarn
 RUN yarn generate
 
 # Build final image
