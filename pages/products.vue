@@ -195,12 +195,7 @@
             />
           </template>
           <template v-slot:item.price="{ item }">
-            {{
-              (item.price / 100.0).toLocaleString(undefined, {
-                style: 'currency',
-                currency: 'EUR',
-              })
-            }}
+            {{ item.price | formatPrice }}
           </template>
           <template v-slot:item.manufacturer_id="{ item }">
             {{
