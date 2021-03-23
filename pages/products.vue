@@ -205,16 +205,21 @@
             }}
           </template>
           <template v-slot:item.actions="{ item }">
-            <v-icon small class="mr-2" @click="editProduct(item)">
+            <a :href="`${$config.frontendURL}/producten/p/${item.id}`">
+              <v-icon small class="mx-1">mdi-link-variant</v-icon>
+            </a>
+            <v-icon small class="mx-1" @click="editProduct(item)">
               mdi-pencil
             </v-icon>
-            <v-icon small class="mr-2" @click="editDescriptions(item)">
+            <v-icon small class="mx-1" @click="editDescriptions(item)">
               mdi-format-font
             </v-icon>
-            <v-icon small class="mr-2" @click="selectImage(item)">
+            <v-icon small class="mx-1" @click="selectImage(item)">
               mdi-image-plus
             </v-icon>
-            <v-icon small @click="deleteProduct(item.id)"> mdi-delete </v-icon>
+            <v-icon small class="mx-1" @click="deleteProduct(item.id)">
+              mdi-delete
+            </v-icon>
           </template>
         </v-data-table>
       </v-col>

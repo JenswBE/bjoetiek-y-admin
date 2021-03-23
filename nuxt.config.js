@@ -1,6 +1,14 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from 'vuetify/es5/util/colors';
 
 export default {
+  // Runtime config
+  publicRuntimeConfig: {
+    frontendURL:
+      process.env.NODE_ENV === 'production'
+        ? 'https://bjoetiek-y.be'
+        : 'http://localhost:8080',
+  },
+
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
 
@@ -23,9 +31,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [
-    '~plugins/filters.js',
-  ],
+  plugins: ['~plugins/filters.js'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -48,7 +54,10 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: process.env.NODE_ENV === 'production' ? 'https://backend.bjoetiek-y.be/admin' : 'http://localhost:8090/admin',
+    baseURL:
+      process.env.NODE_ENV === 'production'
+        ? 'https://backend.bjoetiek-y.be/admin'
+        : 'http://localhost:8090/admin',
   },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
@@ -72,4 +81,4 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {},
-}
+};
