@@ -8,6 +8,7 @@
           sort-by="name"
           class="elevation-1"
           :search="search"
+          disable-pagination
           hide-default-footer
         >
           <template v-slot:top>
