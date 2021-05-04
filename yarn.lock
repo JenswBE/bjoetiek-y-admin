@@ -2445,9 +2445,9 @@ __metadata:
   dependencies:
     "@nuxtjs/axios": ^5.13.1
     "@nuxtjs/vuetify": ^1.11.3
-    core-js: ^3.10.1
-    eslint-config-prettier: ^8.1.0
-    eslint-plugin-prettier: ^3.3.1
+    core-js: ^3.11.2
+    eslint-config-prettier: ^8.3.0
+    eslint-plugin-prettier: ^3.4.0
     lodash.clonedeep: ^4.5.0
     nuxt: ^2.15.4
     prettier: ^2.2.1
@@ -3905,10 +3905,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.10.1":
-  version: 3.10.1
-  resolution: "core-js@npm:3.10.1"
-  checksum: 5329c1bb03a9fa36d259b26180d9c4ad377a37867d2753b08a53738d41adb3b1193708abfaec4976d422140abcfabdc272584fb9ed16b1406a5c02fd122b8702
+"core-js@npm:^3.11.2":
+  version: 3.11.2
+  resolution: "core-js@npm:3.11.2"
+  checksum: a332ed594db0bbb01344c1a5e18796d9459911006a47f5e7ebb645c04cc63c26726ba7acdd81956324f58153450fb14c3de634bccfe127c2982d2bd5db9409f2
   languageName: node
   linkType: hard
 
@@ -4878,20 +4878,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "eslint-config-prettier@npm:8.1.0"
+"eslint-config-prettier@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "eslint-config-prettier@npm:8.3.0"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
     eslint-config-prettier: bin/cli.js
-  checksum: 409d3a071f8228d4c958a6a9be9d5ec2b357ce21b7b6cbb137096cade2c31f008a0a3c3533dee8979c0cd944f220a959710b30fd86f8b96f0ef1f4f557d740b3
+  checksum: 94ccbb50fb67e5e47e8ba6cfa257b5cbf53619990ab13f46b99518cfe9b900394b93bdf6ffedbde1a8e2997d301b0fbd73a6b4202146bc53475dfb30a8c812f2
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^3.3.1":
-  version: 3.3.1
-  resolution: "eslint-plugin-prettier@npm:3.3.1"
+"eslint-plugin-prettier@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "eslint-plugin-prettier@npm:3.4.0"
   dependencies:
     prettier-linter-helpers: ^1.0.0
   peerDependencies:
@@ -4900,7 +4900,7 @@ __metadata:
   peerDependenciesMeta:
     eslint-config-prettier:
       optional: true
-  checksum: cf35b0f0e9ef30782fe82913db92f6874181723d77f0c4613f9d69c87069f73d0dc420ef850ebc844613c00a8e87eb9762a36b7d028334c5c7b091763118347b
+  checksum: 322be1af8c7a6b7f1c718d912090722b65da072fda05bbc0a9d94523e6c3dfda49a7f62fd411126f1909c12bbc63e827ee6459163b2ce3458adb292541decf66
   languageName: node
   linkType: hard
 
